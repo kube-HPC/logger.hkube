@@ -1,0 +1,35 @@
+{
+  "name": "logger.rf",
+  "main": "index.js",
+  "version": "1.0.2",
+  "description": "best logger ever",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "moment": "^2.18.1",
+    "pub-sub-adapter.rf": "^1.0.2",
+    "redis-utils.rf": "^1.0.0",
+    "stack-trace": "0.0.9",
+    "winston": "^1.0.1",
+    "winston-kibana": "^0.1.0",
+    "winston-logstash": "^0.2.11"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "intercept-stdout": "^0.1.2",
+    "mockery": "^1.7.0",
+    "sinon": "^1.17.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.rms:RMS-Common/logger.git"
+  },
+  "author": "RAF",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/vodGroup/logger#readme",
+  "directories": {
+    "test": "test"
+  }
+}
