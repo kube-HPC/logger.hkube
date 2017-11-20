@@ -10,7 +10,7 @@ var mockery = require('mockery');
 var Logger = require('../index');
 var VerbosityPlugin = require('../index').VerbosityPlugin;
 var intercept = require('intercept-stdout');
-var PubSubAdapter = require('pub-sub-adapter');
+var PubSubAdapter = require('pub-sub-adapter.rf');
 var moment = require('moment');
 
 var redisConfig = {
@@ -33,7 +33,33 @@ var config = {
     verbosityLevel: 1,
     isDefault: true
 };
+describe('transports', () => {
+    it('should fluentd', (done) => {
+        let relativeConfig = {
+            machineType: "test",
+            transport: {
+                fluentd: true
+            },
+            extraDetails: true,
+            verbosityLevel: 2,
+            isDefault: true
+        }
+        let log = new Logger('test', relativeConfig);
+        let logObj = '';
+        let intercetptInstance = intercept((stdout) => {
+            logObj = stdout;
 
+        })
+        setTimeout(() => {
+            intercetptInstance();
+            expect(logObj).to.not.contain('hi info test');
+            done();
+        }, 1000)
+
+        log.info('hi info test', { component: 'test-Component' });
+
+    })
+});
 describe('Plugins', () => {
     const TOPIC_SET = 'rms-logger-api-trace-level-logger-set';
     const TOPIC_GET = 'rms-logger-api-trace-level-logger-get';
@@ -48,7 +74,7 @@ describe('Plugins', () => {
     it('should throw error when plugin is not instance of plugin', (done) => {
         expect(function () {
             let log = new Logger('test', config);
-            log.plugins.use({test: 'bla'});
+            log.plugins.use({ test: 'bla' });
         }).to.throw(TypeError, 'plugin must be instance of plugin');
         done();
     });
@@ -76,7 +102,7 @@ describe('Plugins', () => {
         log.plugins.use(new VerbosityPlugin(redisConfig));
 
         setTimeout(() => {
-            pubSubAdapter.requestReply(TOPIC_SET, {level: null}).then((response) => {
+            pubSubAdapter.requestReply(TOPIC_SET, { level: null }).then((response) => {
                 expect(response.error).to.equal('debug level is missing');
                 done();
             });
@@ -87,7 +113,7 @@ describe('Plugins', () => {
         log.plugins.use(new VerbosityPlugin(redisConfig));
 
         setTimeout(() => {
-            pubSubAdapter.requestReply(TOPIC_SET, {level: 500}).then((response) => {
+            pubSubAdapter.requestReply(TOPIC_SET, { level: 500 }).then((response) => {
                 expect(response.error).to.equal(`debug level is invalid (500)`);
                 done();
             });
@@ -98,7 +124,7 @@ describe('Plugins', () => {
         log.plugins.use(new VerbosityPlugin(redisConfig));
 
         setTimeout(() => {
-            pubSubAdapter.requestReply(TOPIC_SET, {level: 0}).then((response) => {
+            pubSubAdapter.requestReply(TOPIC_SET, { level: 0 }).then((response) => {
                 expect(response.data).to.equal('ok');
 
                 pubSubAdapter.requestReply(TOPIC_GET).then((response) => {
@@ -200,7 +226,7 @@ describe('test-formating', () => {
             intercetptInstance();
 
         })
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
     })
     afterEach(() => {
 
@@ -236,7 +262,7 @@ describe('should-contain-extra-details', () => {
             intercetptInstance();
 
         })
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
     })
     it('extra-details-flag-off', (done) => {
         let relativeConfig = {
@@ -264,7 +290,7 @@ describe('should-contain-extra-details', () => {
             intercetptInstance();
 
         })
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
     })
     afterEach(() => {
 
@@ -303,7 +329,7 @@ describe('test-trace', () => {
             done();
         }, 1000)
 
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
 
     })
     it('should-contain-log-info-message', (done) => {
@@ -329,7 +355,7 @@ describe('test-trace', () => {
             logObj = stdout;
 
         })
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
         setTimeout(() => {
             intercetptInstance();
             expect(logObj).to.contain('hi info test');
@@ -367,7 +393,7 @@ describe('test-trace', () => {
             setTimeout(() => {
                 // updating trace level and verfiy that log received
                 log.updateTraceLevel(1);
-                log.info('hi info test', {component: 'test-Component'});
+                log.info('hi info test', { component: 'test-Component' });
                 intercetptInstance();
                 expect(logObj).to.contain('hi info test');
                 done();
@@ -377,7 +403,7 @@ describe('test-trace', () => {
 
         }, 500)
 
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
 
     })
     afterEach(() => {
@@ -414,7 +440,7 @@ describe('test-get-logger-from-container-without-container-name', () => {
             intercetptInstance();
 
         })
-        log.info('hi info test', {component: 'test-Component'});
+        log.info('hi info test', { component: 'test-Component' });
     })
     afterEach(() => {
 
