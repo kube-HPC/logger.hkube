@@ -1,7 +1,7 @@
 {
   "name": "logger.rf",
   "main": "index.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "best logger ever",
   "dependencies": {
     "colors": "^1.1.2",
