@@ -1,5 +1,5 @@
 {
-  "name": "logger.rf",
+  "name": "logger.hkube",
   "main": "index.js",
   "version": "1.0.4",
   "description": "best logger ever",
