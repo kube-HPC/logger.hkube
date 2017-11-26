@@ -1,5 +1,5 @@
 {
-  "name": "logger.hkube",
+  "name": "@hkube/logger",
   "main": "index.js",
   "version": "1.0.7",
   "description": "best logger ever",
@@ -7,8 +7,8 @@
     "colors": "^1.1.2",
     "cycle": "^1.0.3",
     "moment": "^2.19.2",
-    "pub-sub-adapter.hkube": "^1.0.4",
-    "redis-utils.hkube": "^1.0.1",
+    "@hkube/pub-sub-adapter": "^1.0.4",
+    "@hkube/redis-utils": "^1.0.1",
     "stack-trace": "0.0.9",
     "winston": "^1.1.2",
     "winston-kibana": "^0.1.0",
