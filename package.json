@@ -1,7 +1,7 @@
 {
   "name": "@hkube/logger",
   "main": "index.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "best logger ever",
   "dependencies": {
     "colors": "^1.1.2",
