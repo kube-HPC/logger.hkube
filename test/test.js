@@ -10,7 +10,7 @@ var mockery = require('mockery');
 var Logger = require('../index');
 var VerbosityPlugin = require('../index').VerbosityPlugin;
 var intercept = require('intercept-stdout');
-var PubSubAdapter = require('pub-sub-adapter.rf');
+var PubSubAdapter = require('@hkube/pub-sub-adapter');
 var moment = require('moment');
 
 var redisConfig = {
