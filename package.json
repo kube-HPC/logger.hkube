@@ -4,14 +4,13 @@
   "version": "1.0.12",
   "description": "best logger ever",
   "dependencies": {
+    "@hkube/pub-sub-adapter": "^1.0.4",
+    "@hkube/redis-utils": "^1.0.1",
     "colors": "^1.1.2",
     "cycle": "^1.0.3",
     "moment": "^2.19.2",
-    "@hkube/pub-sub-adapter": "^1.0.4",
-    "@hkube/redis-utils": "^1.0.1",
     "stack-trace": "0.0.9",
     "winston": "^1.1.2",
-    "winston-kibana": "^0.1.0",
     "winston-logstash": "^0.2.11"
   },
   "devDependencies": {
@@ -22,13 +21,9 @@
     "sinon": "^1.17.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/_mocha tests --colors --recursive --exit"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@gitlab.com:greenapes/hkube-common/logger.rf.git"
-  },
-  "author": "RAF",
+  "author": "Hkube",
   "license": "MIT",
   "directories": {
     "test": "test"

@@ -135,6 +135,28 @@ describe('Plugins', () => {
         }, 1000)
     });
 });
+describe('throttle', () => {
+    var config = {
+        transport: {
+            console: true,
+            fluentd: false,
+            logstash: false,
+            file: false
+        },
+        verbosityLevel: 1,
+        throttle: {
+            wait: 30000
+        }
+    };
+    let log = new Logger('test', config);
+    it('should-call-error', (done) => {
+        log.throttle.error('bla');
+        log.throttle.error('bla');
+        log.throttle.error('bla');
+        log.throttle.error('bla');
+        log.throttle.error('bla');
+    })
+});
 describe('sanity-check', () => {
     let log = new Logger('test', config);
     beforeEach(() => {
@@ -232,7 +254,7 @@ describe('test-formating', () => {
 
     })
 });
-describe('should-contain-extra-details', () => {
+describe('extra-details', () => {
 
     beforeEach(() => {
 
@@ -410,7 +432,7 @@ describe('test-trace', () => {
 
     })
 });
-describe('test-get-logger-from-container-without-container-name', () => {
+describe('container', () => {
     beforeEach(() => {
 
     })
