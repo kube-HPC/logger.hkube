@@ -144,13 +144,13 @@ describe.only('colors', () => {
     };
     const log = new Logger('test', config);
     it('should print in colors', () => {
-        log.silly('bla');
-        log.trace('trace');
-        log.debug('debug');
-        log.info('info');
-        log.warning('warning');
-        log.error('error');
-        log.critical('critical');
+        log.silly('bla', { component: 'MAIN' });
+        log.trace('trace', { component: 'MAIN' });
+        log.debug('debug', { component: 'MAIN' });
+        log.info('info', { component: 'MAIN' });
+        log.warning('warning', { component: 'MAIN' });
+        log.error('error', { component: 'MAIN' });
+        log.critical('critical', { component: 'MAIN' });
     })
 });
 describe('throttle', () => {
