@@ -135,6 +135,24 @@ describe('Plugins', () => {
         }, 1000)
     });
 });
+describe.only('colors', () => {
+    const config = {
+        transport: {
+            console: true
+        },
+        verbosityLevel: 0
+    };
+    const log = new Logger('test', config);
+    it('should print in colors', () => {
+        log.silly('bla');
+        log.trace('trace');
+        log.debug('debug');
+        log.info('info');
+        log.warning('warning');
+        log.error('error');
+        log.critical('critical');
+    })
+});
 describe('throttle', () => {
     var config = {
         transport: {
@@ -159,9 +177,6 @@ describe('throttle', () => {
 });
 describe('sanity-check', () => {
     let log = new Logger('test', config);
-    beforeEach(() => {
-        //   this.sinon.stub(console,'log');
-    })
     it('should-call-debug', (done) => {
         let intercetptInstance = intercept((stdout) => {
             expect(stdout).to.contain('debug:');
@@ -169,7 +184,6 @@ describe('sanity-check', () => {
             done();
             intercetptInstance();
         })
-        //  console.log('hi')
         log.debug('hi debug test');
     })
     it('should-call-info', (done) => {
@@ -179,7 +193,6 @@ describe('sanity-check', () => {
             done();
             intercetptInstance();
         })
-        //  console.log('hi')
         log.info('hi info test');
     })
     it('should-call-warning', (done) => {
@@ -189,7 +202,6 @@ describe('sanity-check', () => {
             done();
             intercetptInstance();
         })
-        //  console.log('hi')
         log.warning('hi warning test');
     })
     it('should-call-error', (done) => {
@@ -199,7 +211,6 @@ describe('sanity-check', () => {
             done();
             intercetptInstance();
         })
-        //  console.log('hi')
         log.error('hi error test');
     })
     it('should-call-critical', (done) => {
@@ -209,11 +220,7 @@ describe('sanity-check', () => {
             done();
             intercetptInstance();
         })
-        //  console.log('hi')
         log.critical('hi critical test');
-    })
-    afterEach(() => {
-
     })
 });
 describe('test-formating', () => {
@@ -255,10 +262,6 @@ describe('test-formating', () => {
     })
 });
 describe('extra-details', () => {
-
-    beforeEach(() => {
-
-    })
     it('extra-details-flag-on', (done) => {
         let relativeConfig = {
             machineType: "test",
@@ -310,7 +313,6 @@ describe('extra-details', () => {
             expect(stdout).to.not.contain('lineNumber:');
             done();
             intercetptInstance();
-
         })
         log.info('hi info test', { component: 'test-Component' });
     })
