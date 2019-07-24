@@ -45,7 +45,15 @@ configuration
         console: true,
         fluentd: false,
         logstash: false,
-        file: false
+        file: false,
+        redis : true
+    },
+    redis: {
+            host: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_HOST : process.env.REDIS_SERVICE_HOST || 'localhost',
+            port: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_PORT : process.env.REDIS_SERVICE_PORT || 6379,
+            sentinel: useSentinel,
+            verbosityLevelByRedis: process.env.REDIS_VERBOSITY || true,
+            clientVerbosity: process.env.CLIENT_VERBOSITY || 'error'
     },
     logstash : {
         logstashURL: "127.0.0.1",
@@ -65,6 +73,9 @@ var Logger = require('logger');
 let log = new Logger('test',relativeConfig);
 ```
 
+
+
+
 ### get  created logger
 - use this if know the log container name
 ```js
@@ -79,6 +90,12 @@ var log = Logger.GetLogFromContainer();
   log.info('running application in ' + conf.env() + ' environment', {component: componentName.MAIN});    
   log.error('Error response, status=' + res.status + ', message=' + res.error.message, {component: componentName.REST_API});
 ```
+
+### redis config 
+
+    `hkube:logs:consoleVerbosity` key set the console log verbosity default `info`
+    `hkube:logs:clientVerbosity` key set the ui log verbosity default `error`
+
 
 
 ## ENJOY :)
