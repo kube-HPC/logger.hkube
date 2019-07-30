@@ -36,28 +36,62 @@ var config = {
 	isDefault: true
 };
 describe('transports', () => {
-	xit('should fluentd', done => {
+	it('should multiple transports ', () => {
+		// let intercetptInstance = intercept(stdout => {
+
+		// 	intercetptInstance();
+		// 	done();
+		// });
+		const useSentinel = false;
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
-				fluentd: true
+				fluentd: true,
+				console: true,
+				redis: true
+			},
+			redis: {
+				host: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_HOST : process.env.REDIS_SERVICE_HOST || 'localhost',
+				port: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_PORT : process.env.REDIS_SERVICE_PORT || 6379,
+				sentinel: useSentinel,
+				verbosityLevelByRedis: process.env.REDIS_VERBOSITY || true,
+				clientVerbosity: process.env.CLIENT_VERBOSITY || 'error'
 			},
 			extraDetails: true,
 			verbosityLevel: 2,
 			isDefault: true
 		};
 		let log = new Logger('test', relativeConfig);
-		let logObj = '';
-		let intercetptInstance = intercept(stdout => {
-			logObj = stdout;
-		});
-		setTimeout(() => {
-			intercetptInstance();
-			expect(logObj).to.not.contain('hi info test');
-			done();
-		}, 1000);
+		const spy = sinon.spy(log, '_log');
+
+		//		const spy = sinon.spy(log, '_log');
+		//let logObj = '';
+		// let intercetptInstance = intercept(stdout => {
+		// 	logObj = stdout;
+		// });
+		log.info('hi info test', { component: 'test-Component' });
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(msg).to.contain('hi info test');
+		//const [level, msg] = spy.getCalls()[0].args;
+	});
+	it('should fluentd ', () => {
+		let relativeConfig = {
+			machineType: 'test',
+			transport: {
+				fluentd: true
+			},
+
+			extraDetails: true,
+			verbosityLevel: 2,
+			isDefault: true
+		};
+		let log = new Logger('test', relativeConfig);
+
+		const spy = sinon.spy(log, '_log');
 
 		log.info('hi info test', { component: 'test-Component' });
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(msg).to.contain('hi info test');
 	});
 
 	it('should redis', done => {
@@ -172,38 +206,38 @@ xdescribe('Plugins', () => {
 	});
 });
 describe('colors', () => {
-	const config = {
-		transport: {
-			console: true
-		},
-		verbosityLevel: 0
-	};
-	const log = new Logger('test', config);
 	it('should print in colors', () => {
+		const config = {
+			transport: {
+				console: true
+			},
+			verbosityLevel: 0
+		};
+		const log = new Logger('test', config);
 		log.silly('bla', { component: 'MAIN' });
 		log.trace('trace', { component: 'MAIN' });
-		log.debug('debug', { component: 'MAIN' });
 		log.info('info', { component: 'MAIN' });
+		log.debug('debug', { component: 'MAIN' });
 		log.warning('warning', { component: 'MAIN' });
 		log.error('error', { component: 'MAIN' });
 		log.critical('critical', { component: 'MAIN' });
 	});
 });
 xdescribe('throttle', () => {
-	var config = {
-		transport: {
-			console: true,
-			fluentd: false,
-			logstash: false,
-			file: false
-		},
-		verbosityLevel: 1,
-		throttle: {
-			wait: 30000
-		}
-	};
-	let log = new Logger('test', config);
 	it('should-call-error', done => {
+		var config = {
+			transport: {
+				console: true,
+				fluentd: false,
+				logstash: false,
+				file: false
+			},
+			verbosityLevel: 1,
+			throttle: {
+				wait: 30000
+			}
+		};
+		let log = new Logger('test', config);
 		log.throttle.error('bla');
 		log.throttle.error('bla');
 		log.throttle.error('bla');
@@ -212,86 +246,95 @@ xdescribe('throttle', () => {
 	});
 });
 describe('sanity-check', () => {
-	let log = new Logger('test', config);
-	it('should-call-debug', done => {
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('debug:');
-			expect(stdout).to.contain('hi debug test');
-			done();
-			intercetptInstance();
-		});
+	it('should-call-debug', () => {
+		let log = new Logger('test', config);
+		const spy = sinon.spy(log, '_log');
+		// let intercetptInstance = intercept(stdout => {
+
+		// 	intercetptInstance();
+		// 	done();
+		// });
 		log.debug('hi debug test');
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(level).to.contain('debug');
+		expect(msg).to.contain('hi debug test');
 	});
-	it('should-call-info', done => {
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('info:');
-			expect(stdout).to.contain('hi info test');
-			done();
-			intercetptInstance();
-		});
+	it('should-call-info', () => {
+		let log = new Logger('test', config);
+		const spy = sinon.spy(log, '_log');
 		log.info('hi info test');
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(level).to.contain('info');
+		expect(msg).to.contain('hi info test');
 	});
-	it('should-call-warning', done => {
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('warning:');
-			expect(stdout).to.contain('hi warning test');
-			done();
-			intercetptInstance();
-		});
+	it('should-call-warning', () => {
+		let log = new Logger('test', config);
+		const spy = sinon.spy(log, '_log');
 		log.warning('hi warning test');
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(level).to.contain('warning');
+		expect(msg).to.contain('hi warning test');
 	});
-	it('should-call-error', done => {
-		let intercetptInstance = intercept((stdout, stderr) => {
-			expect(stdout).to.contain('error:');
-			expect(stdout).to.contain('hi error test');
-			done();
-			intercetptInstance();
-		});
+	it('should-call-error', () => {
+		let log = new Logger('test', config);
+		const spy = sinon.spy(log, '_log');
+		// let intercetptInstance = intercept((stdout, stderr) => {
+
+		// 	intercetptInstance();
+		// 	done();
+		// });
 		log.error('hi error test');
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(level).to.contain('error');
+		expect(msg).to.contain('hi error test');
 	});
-	it('should-call-critical', done => {
-		let intercetptInstance = intercept((stdout, stderr) => {
-			expect(stdout).to.contain('critical:');
-			expect(stdout).to.contain('hi critical test');
-			done();
-			intercetptInstance();
-		});
+	it('should-call-critical', () => {
+		let log = new Logger('test', config);
+		const spy = sinon.spy(log, '_log');
+		// let intercetptInstance = intercept((stdout, stderr) => {
+		// 	expect(stdout).to.contain('critical');
+		// 	expect(stdout).to.contain('hi critical test');
+		// 	intercetptInstance();
+		// 	done();
+		// });
 		log.critical('hi critical test');
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(level).to.contain('critical');
+		expect(msg).to.contain('hi critical test');
 	});
 });
 xdescribe('test-formating', () => {
-	let log = new Logger('test', config);
-	beforeEach(() => {});
-	it('should-contain-format', done => {
+	beforeEach(() => {
+		let log = new Logger('test', config);
+	});
+	it('should-contain-format', () => {
+		const spy = sinon.spy(log, '_log');
 		let intercetptInstance = intercept(stdout => {
 			expect(stdout).to.contain('m  ->');
 			expect(stdout).to.contain('info:');
-			done();
 			intercetptInstance();
+			//	done();
 		});
 		log.info('hi info test');
 	});
-	it('should-contain-date-format', done => {
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain(moment().format('MMMM Do YYYY, h'));
+	it('should-contain-date-format', () => {
+		const spy = sinon.spy(log, '_log');
 
-			done();
-			intercetptInstance();
-		});
 		log.info('hi info test');
 	});
 	it('component-name', done => {
+		const spy = sinon.spy(log, '_log');
 		let intercetptInstance = intercept(stdout => {
 			expect(stdout).to.contain('( test-Component )');
-			done();
 			intercetptInstance();
+			done();
 		});
 		log.info('hi info test', { component: 'test-Component' });
 	});
 	afterEach(() => {});
 });
 describe('extra-details', () => {
-	it('extra-details-flag-on', done => {
+	xit('extra-details-flag-on', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -308,16 +351,20 @@ describe('extra-details', () => {
 			verbosityLevel: 1
 		};
 		let log = new Logger('test', relativeConfig);
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('{{');
-			expect(stdout).to.contain('test.js');
-			expect(stdout).to.contain('lineNumber:');
-			done();
-			intercetptInstance();
-		});
+		const spy = sinon.spy(log, '_log');
+		// let intercetptInstance = intercept(stdout => {
+		// 	expect(stdout).to.contain('{{');
+		// 	//	expect(stdout).to.contain('test.js');
+		// 	expect(stdout).to.contain('lineNumber:');
+		// 	intercetptInstance();
+		// 	done();
+		// });
 		log.info('hi info test', { component: 'test-Component' });
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(level).to.contain('{{');
+		expect(msg).to.contain('lineNumber:');
 	});
-	xit('extra-details-flag-off', done => {
+	xit('extra-details-flag-off', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -334,13 +381,15 @@ describe('extra-details', () => {
 			verbosityLevel: 1,
 			isDefault: true
 		};
+		const spy = sinon.spy(log, '_log');
+
 		let log = new Logger('test', relativeConfig);
 		let intercetptInstance = intercept(stdout => {
 			expect(stdout).to.not.contain('{{');
 			expect(stdout).to.not.contain('test.js');
 			expect(stdout).to.not.contain('lineNumber:');
-			done();
 			intercetptInstance();
+			done();
 		});
 		log.info('hi info test', { component: 'test-Component' });
 	});
@@ -348,7 +397,7 @@ describe('extra-details', () => {
 });
 describe('test-trace', () => {
 	beforeEach(() => {});
-	it('should-not-contain-log-info-message', done => {
+	it('should-not-contain-log-info-message', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -366,19 +415,12 @@ describe('test-trace', () => {
 			isDefault: true
 		};
 		let log = new Logger('test', relativeConfig);
-		let logObj = '';
-		let intercetptInstance = intercept(stdout => {
-			logObj = stdout;
-		});
-		setTimeout(() => {
-			intercetptInstance();
-			expect(logObj).to.not.contain('hi info test');
-			done();
-		}, 1000);
-
+		const spy = sinon.spy(log, '_log');
 		log.info('hi info test', { component: 'test-Component' });
+		const data = spy.getCalls()[0];
+		expect(data).to.be.undefined;
 	});
-	it('should-contain-log-info-message', done => {
+	it('should-contain-log-info-message', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -396,18 +438,12 @@ describe('test-trace', () => {
 			isDefault: true
 		};
 		let log = new Logger('test', relativeConfig);
-		let logObj = '';
-		let intercetptInstance = intercept(stdout => {
-			logObj = stdout;
-		});
+		const spy = sinon.spy(log, '_log');
 		log.info('hi info test', { component: 'test-Component' });
-		setTimeout(() => {
-			intercetptInstance();
-			expect(logObj).to.contain('hi info test');
-			done();
-		}, 1000);
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(msg).to.contain('hi info test');
 	});
-	it('should-update-trace-level-during-run', done => {
+	it('should-update-trace-level-during-run', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -425,30 +461,23 @@ describe('test-trace', () => {
 			isDefault: true
 		};
 		let log = new Logger('test', relativeConfig);
-		let logObj = '';
-		let intercetptInstance = intercept(stdout => {
-			logObj = stdout;
-		});
-		setTimeout(() => {
-			// first testing that not received
-			expect(logObj).to.not.contain('hi info test');
-			setTimeout(() => {
-				// updating trace level and verfiy that log received
-				log.updateTraceLevel(1);
-				log.info('hi info test', { component: 'test-Component' });
-				intercetptInstance();
-				expect(logObj).to.contain('hi info test');
-				done();
-			}, 500);
-		}, 500);
-
+		const spy = sinon.spy(log, '_log');
+		// first testing that not received
 		log.info('hi info test', { component: 'test-Component' });
+		const data = spy.getCalls().args;
+		expect(data).to.be.undefined;
+		log.updateTraceLevel(1);
+		spy.restore();
+		const spy2 = sinon.spy(log, '_log');
+		log.info('hi info test', { component: 'test-Component' });
+		const [level2, msg2] = spy2.getCalls()[0].args;
+		expect(msg2).to.contain('hi info test');
 	});
 	afterEach(() => {});
 });
 describe('container', () => {
 	beforeEach(() => {});
-	it('get-without-container-name', done => {
+	it('get-without-container-name', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -467,12 +496,10 @@ describe('container', () => {
 		};
 		let logger = new Logger('test', relativeConfig);
 		let log = Logger.GetLogFromContainer();
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('hi info test');
-			done();
-			intercetptInstance();
-		});
+		const spy = sinon.spy(log, '_log');
 		log.info('hi info test', { component: 'test-Component' });
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(msg).to.contain('hi info test');
 	});
 	afterEach(() => {});
 });
