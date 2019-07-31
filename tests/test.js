@@ -92,7 +92,7 @@ describe('transports', () => {
 		log.info('hi info test', { component: 'test-Component' });
 		const {message, meta} = spy.getCalls()[0].args[0];
 		expect(message).to.contain('hi info test');
-		expect(meta.internal.component).to.eql('test-Component')
+		expect(meta.meta.internal.component).to.eql('test-Component')
 	});
 
 	it('should redis', done => {
