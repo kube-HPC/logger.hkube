@@ -87,11 +87,12 @@ describe('transports', () => {
 		};
 		let log = new Logger('test', relativeConfig);
 
-		const spy = sinon.spy(log, '_log');
+		const spy = sinon.spy(log.container.transports[0], '_log');
 
 		log.info('hi info test', { component: 'test-Component' });
-		const [level, msg] = spy.getCalls()[0].args;
-		expect(msg).to.contain('hi info test');
+		const {message, meta} = spy.getCalls()[0].args[0];
+		expect(message).to.contain('hi info test');
+		expect(meta.internal.component).to.eql('test-Component')
 	});
 
 	it('should redis', done => {
