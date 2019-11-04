@@ -36,6 +36,24 @@ var config = {
 	isDefault: true
 };
 describe('transports', () => {
+	it ('should be silent with no transports',()=>{
+		let relativeConfig = {
+			machineType: 'test',
+			transport: {
+				fluentd: false,
+				console: false,
+				redis: false
+			},
+			verbosityLevel: 2,
+			isDefault: true
+		};
+		let log = new Logger('test', relativeConfig);
+		const spy = sinon.spy(log, '_log');
+
+		log.info('hi info test', { component: 'test-Component' });
+		const [level, msg] = spy.getCalls()[0].args;
+		expect(msg).to.contain('hi info test');
+	})
 	it('should multiple transports ', () => {
 		// let intercetptInstance = intercept(stdout => {
 
