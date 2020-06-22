@@ -10,13 +10,13 @@
 		"cycle": "^1.0.3",
 		"moment": "^2.19.2",
 		"stack-trace": "0.0.9",
+		"uuid": "^8.1.0",
 		"winston": "^3.2.1",
 		"winston-logstash": "^0.2.11",
 		"winston-transport": "^4.3.0"
 	},
 	"devDependencies": {
 		"chai": "^3.3.0",
-		"intercept-stdout": "^0.1.2",
 		"mocha": "^4.0.1",
 		"mockery": "^1.7.0",
 		"sinon": "^1.17.1"

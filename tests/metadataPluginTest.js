@@ -3,7 +3,6 @@ const expect = chai.expect;
 const Logger = require('../index');
 const MetadataPlugin = require('../index').MetadataPlugin;
 const VerbosityPlugin = require('../index').VerbosityPlugin;
-const intercept = require('intercept-stdout');
 
 const config = {
 	transport: {
@@ -39,14 +38,12 @@ describe('Metadata enrichment plugin', () => {
 		const log = new Logger('test1', config);
 		expect(() => new MetadataPlugin({ enrichCallback: 'not a function' })).to.throw('enrichCallback should be a function');
 	});
-
 	it('should save enrichCallback when it is a function', () => {
 		const log = new Logger('test1', config);
 		const plugin = new MetadataPlugin({ enrichCallback: metadata => metadata });
 		log.metadataEnrichers.use(plugin);
 		expect(plugin._enrichCallback).to.not.be.undefined;
 	});
-
 	xit('should not change log', done => {
 		const log = new Logger('test1', config);
 		const plugin = new MetadataPlugin({ enrichCallback: metadata => metadata });

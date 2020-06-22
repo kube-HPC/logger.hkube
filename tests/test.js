@@ -6,13 +6,10 @@
 var chai = require('chai');
 var expect = chai.expect;
 var sinon = require('sinon');
-var mockery = require('mockery');
 var Logger = require('../index');
 var VerbosityPlugin = require('../index').VerbosityPlugin;
-var intercept = require('intercept-stdout');
 var PubSubAdapter = require('@hkube/pub-sub-adapter');
 const RedisFactory = require('@hkube/redis-utils').Factory;
-var moment = require('moment');
 
 var redisConfig = {
 	host: 'localhost',
@@ -36,7 +33,7 @@ var config = {
 	isDefault: true
 };
 describe('transports', () => {
-	it ('should be silent with no transports',()=>{
+	it('should be silent with no transports', () => {
 		let relativeConfig = {
 			machineType: 'test',
 			transport: {
@@ -55,11 +52,6 @@ describe('transports', () => {
 		expect(msg).to.contain('hi info test');
 	})
 	it('should multiple transports ', () => {
-		// let intercetptInstance = intercept(stdout => {
-
-		// 	intercetptInstance();
-		// 	done();
-		// });
 		const useSentinel = false;
 		let relativeConfig = {
 			machineType: 'test',
@@ -81,16 +73,9 @@ describe('transports', () => {
 		};
 		let log = new Logger('test', relativeConfig);
 		const spy = sinon.spy(log, '_log');
-
-		//		const spy = sinon.spy(log, '_log');
-		//let logObj = '';
-		// let intercetptInstance = intercept(stdout => {
-		// 	logObj = stdout;
-		// });
 		log.info('hi info test', { component: 'test-Component' });
 		const [level, msg] = spy.getCalls()[0].args;
 		expect(msg).to.contain('hi info test');
-		//const [level, msg] = spy.getCalls()[0].args;
 	});
 	it('should fluentd ', () => {
 		let relativeConfig = {
@@ -108,7 +93,7 @@ describe('transports', () => {
 		const spy = sinon.spy(log.container.transports[0], '_log');
 
 		log.info('hi info test', { component: 'test-Component' });
-		const {message, meta} = spy.getCalls()[0].args[0];
+		const { message, meta } = spy.getCalls()[0].args[0];
 		expect(message).to.contain('hi info test');
 		expect(meta.meta.internal.component).to.eql('test-Component')
 	});
@@ -154,21 +139,21 @@ xdescribe('Plugins', () => {
 	const TOPIC_GET = 'rms-logger-api-trace-level-logger-get';
 
 	it('should throw error when plugin is undefined', done => {
-		expect(function() {
+		expect(function () {
 			let log = new Logger('test', config);
 			log.plugins.use(null);
 		}).to.throw(Error, 'plugin is undefined');
 		done();
 	});
 	it('should throw error when plugin is not instance of plugin', done => {
-		expect(function() {
+		expect(function () {
 			let log = new Logger('test', config);
 			log.plugins.use({ test: 'bla' });
 		}).to.throw(TypeError, 'plugin must be instance of plugin');
 		done();
 	});
 	it('should throw error on duplicate plugin registration', done => {
-		expect(function() {
+		expect(function () {
 			let log = new Logger('test', config);
 			log.plugins.use(new VerbosityPlugin(redisConfig));
 			log.plugins.use(new VerbosityPlugin(redisConfig));
@@ -268,11 +253,6 @@ describe('sanity-check', () => {
 	it('should-call-debug', () => {
 		let log = new Logger('test', config);
 		const spy = sinon.spy(log, '_log');
-		// let intercetptInstance = intercept(stdout => {
-
-		// 	intercetptInstance();
-		// 	done();
-		// });
 		log.debug('hi debug test');
 		const [level, msg] = spy.getCalls()[0].args;
 		expect(level).to.contain('debug');
@@ -297,11 +277,6 @@ describe('sanity-check', () => {
 	it('should-call-error', () => {
 		let log = new Logger('test', config);
 		const spy = sinon.spy(log, '_log');
-		// let intercetptInstance = intercept((stdout, stderr) => {
-
-		// 	intercetptInstance();
-		// 	done();
-		// });
 		log.error('hi error test');
 		const [level, msg] = spy.getCalls()[0].args;
 		expect(level).to.contain('error');
@@ -310,112 +285,14 @@ describe('sanity-check', () => {
 	it('should-call-critical', () => {
 		let log = new Logger('test', config);
 		const spy = sinon.spy(log, '_log');
-		// let intercetptInstance = intercept((stdout, stderr) => {
-		// 	expect(stdout).to.contain('critical');
-		// 	expect(stdout).to.contain('hi critical test');
-		// 	intercetptInstance();
-		// 	done();
-		// });
 		log.critical('hi critical test');
 		const [level, msg] = spy.getCalls()[0].args;
 		expect(level).to.contain('critical');
 		expect(msg).to.contain('hi critical test');
 	});
 });
-xdescribe('test-formating', () => {
-	beforeEach(() => {
-		let log = new Logger('test', config);
-	});
-	it('should-contain-format', () => {
-		const spy = sinon.spy(log, '_log');
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('m  ->');
-			expect(stdout).to.contain('info:');
-			intercetptInstance();
-			//	done();
-		});
-		log.info('hi info test');
-	});
-	it('should-contain-date-format', () => {
-		const spy = sinon.spy(log, '_log');
-
-		log.info('hi info test');
-	});
-	it('component-name', done => {
-		const spy = sinon.spy(log, '_log');
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.contain('( test-Component )');
-			intercetptInstance();
-			done();
-		});
-		log.info('hi info test', { component: 'test-Component' });
-	});
-	afterEach(() => {});
-});
-describe('extra-details', () => {
-	xit('extra-details-flag-on', () => {
-		let relativeConfig = {
-			machineType: 'test',
-			transport: {
-				console: true,
-				fluentd: false,
-				logstash: false,
-				file: false
-			},
-			logstash: {
-				logstashURL: '127.0.0.1',
-				logstashPort: 28777
-			},
-			extraDetails: true,
-			verbosityLevel: 1
-		};
-		let log = new Logger('test', relativeConfig);
-		const spy = sinon.spy(log, '_log');
-		// let intercetptInstance = intercept(stdout => {
-		// 	expect(stdout).to.contain('{{');
-		// 	//	expect(stdout).to.contain('test.js');
-		// 	expect(stdout).to.contain('lineNumber:');
-		// 	intercetptInstance();
-		// 	done();
-		// });
-		log.info('hi info test', { component: 'test-Component' });
-		const [level, msg] = spy.getCalls()[0].args;
-		expect(level).to.contain('{{');
-		expect(msg).to.contain('lineNumber:');
-	});
-	xit('extra-details-flag-off', () => {
-		let relativeConfig = {
-			machineType: 'test',
-			transport: {
-				console: true,
-				fluentd: false,
-				logstash: false,
-				file: false
-			},
-			logstash: {
-				logstashURL: '127.0.0.1',
-				logstashPort: 28777
-			},
-			extraDetails: false,
-			verbosityLevel: 1,
-			isDefault: true
-		};
-		const spy = sinon.spy(log, '_log');
-
-		let log = new Logger('test', relativeConfig);
-		let intercetptInstance = intercept(stdout => {
-			expect(stdout).to.not.contain('{{');
-			expect(stdout).to.not.contain('test.js');
-			expect(stdout).to.not.contain('lineNumber:');
-			intercetptInstance();
-			done();
-		});
-		log.info('hi info test', { component: 'test-Component' });
-	});
-	afterEach(() => {});
-});
 describe('test-trace', () => {
-	beforeEach(() => {});
+	beforeEach(() => { });
 	it('should-not-contain-log-info-message', () => {
 		let relativeConfig = {
 			machineType: 'test',
@@ -492,10 +369,10 @@ describe('test-trace', () => {
 		const [level2, msg2] = spy2.getCalls()[0].args;
 		expect(msg2).to.contain('hi info test');
 	});
-	afterEach(() => {});
+	afterEach(() => { });
 });
 describe('container', () => {
-	beforeEach(() => {});
+	beforeEach(() => { });
 	it('get-without-container-name', () => {
 		let relativeConfig = {
 			machineType: 'test',
@@ -520,5 +397,5 @@ describe('container', () => {
 		const [level, msg] = spy.getCalls()[0].args;
 		expect(msg).to.contain('hi info test');
 	});
-	afterEach(() => {});
+	afterEach(() => { });
 });
