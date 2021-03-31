@@ -97,7 +97,20 @@ describe('transports', () => {
 		expect(message).to.contain('hi info test');
 		expect(meta.meta.internal.component).to.eql('test-Component')
 	});
-
+	it('should log with format ', () => {
+		const config = {
+			format: 'logger::{level}::{message}',
+			verbosityLevel: 1,
+			transport: {
+				console: true
+			}
+		};
+		const log = new Logger('test', config);
+		const spy = sinon.spy(log, '_log');
+		log.info('format test', { component: 'test-Component' });
+		const [, message] = spy.getCalls()[0].args;
+		expect(message).to.contain('format test');
+	});
 	it('should redis', done => {
 		const useSentinel = false;
 		let relativeConfig = {

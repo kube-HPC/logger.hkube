@@ -10,6 +10,7 @@
 		"cycle": "^1.0.3",
 		"moment": "^2.19.2",
 		"stack-trace": "0.0.9",
+		"string-template": "^1.0.0",
 		"uuid": "^8.1.0",
 		"winston": "^3.2.1",
 		"winston-logstash": "^0.2.11",
