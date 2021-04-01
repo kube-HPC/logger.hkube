@@ -101,6 +101,7 @@ describe('transports', () => {
 		const config = {
 			format: 'logger::{level}::{message}',
 			verbosityLevel: 1,
+			enableColors: false,
 			transport: {
 				console: true
 			}
