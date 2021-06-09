@@ -1,7 +1,7 @@
 {
 	"name": "@hkube/logger",
 	"main": "index.js",
-	"version": "1.0.29",
+	"version": "1.0.30",
 	"description": "best logger ever ;-)",
 	"dependencies": {
 		"@hkube/pub-sub-adapter": "^1.0.4",
