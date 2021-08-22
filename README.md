@@ -35,12 +35,12 @@
 
 
 ### running 
-    in order to run you can clone the repo or using ```npm install logger ```
-
+in order to run you can clone the repo or using ```npm install logger ```
 
 configuration 
+
 ```js
-  machineType:"test",
+    machineType:"test",
     transport : {
         console: true,
         fluentd: false,
@@ -48,12 +48,24 @@ configuration
         file: false,
         redis : true
     },
+    fileTransport: {
+        level: null,
+        silent: false,
+        eol: null,
+        filename: 'data/info.log',
+        maxsize: 10000,
+        maxFiles: 1000,
+        tailable: true,
+        maxRetries: 2,
+        zippedArchive: false,
+        options: { flags: 'a' },
+    },
     redis: {
-            host: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_HOST : process.env.REDIS_SERVICE_HOST || 'localhost',
-            port: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_PORT : process.env.REDIS_SERVICE_PORT || 6379,
-            sentinel: useSentinel,
-            verbosityLevelByRedis: process.env.REDIS_VERBOSITY || true,
-            clientVerbosity: process.env.CLIENT_VERBOSITY || 'error'
+        host: 'localhost',
+        port: 6379,
+        sentinel: true,
+        verbosityLevelByRedis: true,
+        clientVerbosity: 'error'
     },
     logstash : {
         logstashURL: "127.0.0.1",
@@ -74,12 +86,10 @@ let log = new Logger('test',relativeConfig);
 ```
 
 
-
-
 ### get  created logger
 - use this if know the log container name
 ```js
-var log = Logger.GetLogFromContainer(RMS.ServiceName);
+var log = Logger.GetLogFromContainer(ServiceName);
 ```
 -  don't need to send container name if  set this logger as default with ```isDefault:true```
 ```js
