@@ -6,7 +6,6 @@ const Logger = require('../index');
 const config = {
 	transport: {
 		console: true,
-		fluentd: false,
 		logstash: false,
 		file: false
 	},

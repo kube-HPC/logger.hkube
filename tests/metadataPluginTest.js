@@ -7,7 +7,6 @@ const VerbosityPlugin = require('../index').VerbosityPlugin;
 const config = {
 	transport: {
 		console: false,
-		fluentd: true,
 		logstash: false,
 		file: false
 	},

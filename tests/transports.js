@@ -1,24 +1,31 @@
 const chai = require('chai');
 const expect = chai.expect;
+const fse = require('fs-extra');
 const sinon = require('sinon');
+const readline = require('readline')
 const Logger = require('../index');
 const RedisFactory = require('@hkube/redis-utils').Factory;
+const logsDir = 'logs-dir';
+const delay = d => new Promise((r) => setTimeout(r, d));
 
 describe('transports', () => {
-	before(() => {
-		// clear data dir
-	})
 	describe('file transport', () => {
-		it.skip('should log with info level', () => {
+		beforeEach(async () => {
+			// clear logs dir
+			await fse.emptyDir(logsDir);
+		})
+		it('should log with info level', async () => {
+			const filename = `${logsDir}/info.log`;
 			const relativeConfig = {
 				transport: {
 					file: true
 				},
-				fileTransport: {
+				file: {
+					json: true,
 					level: null,
 					silent: false,
 					eol: null,
-					filename: 'data/info.log',
+					filename: filename,
 					maxsize: 10000,
 					maxFiles: 1000,
 					tailable: true,
@@ -30,8 +37,68 @@ describe('transports', () => {
 				isDefault: true
 			};
 			const log = new Logger('test', relativeConfig);
-			log.info('hi info test', { component: 'info-file-component' });
-			expect(msg).to.contain('hi info test');
+			log.info('test info', { component: 'info-file-component' });
+			await delay(10);
+			const json = await fse.readFile(filename, 'utf8');
+			const line = JSON.parse(json);
+			expect(line.level).to.eql('info');
+			expect(line.message).to.eql('test info');
+		});
+		it('should log with all levels', async () => {
+			const filename = `${logsDir}/info.log`;
+			const relativeConfig = {
+				transport: {
+					file: true,
+					console: true,
+				},
+				file: {
+					json: true,
+					colors: false,
+					level: null,
+					silent: false,
+					eol: null,
+					filename: filename,
+					maxsize: 10000,
+					maxFiles: 1000,
+					tailable: true,
+					maxRetries: 2,
+					zippedArchive: false,
+					options: { flags: 'a' },
+				},
+				console: {
+					json: true,
+					colors: false
+				},
+				verbosityLevel: 0,
+				isDefault: true
+			};
+			const log = new Logger('test', relativeConfig);
+			log.silly('silly log', { component: 'silly-component' });
+			log.trace('trace log', { component: 'trace-component' });
+			log.debug('debug log', { component: 'debug-component' });
+			log.info('info log', { component: 'info-component' });
+			log.warning('warning log', { component: 'warning-component' });
+			log.error('error log', { component: 'error-component' });
+			log.critical('critical log', { component: 'critical-component' });
+			await delay(50);
+			const fileStream = fse.createReadStream(filename);
+
+			const rl = readline.createInterface({
+				input: fileStream,
+				crlfDelay: Infinity
+			});
+			const logs = [];
+			for await (const line of rl) {
+				const json = JSON.parse(line);
+				logs.push(json);
+			}
+			expect(logs[0].message).to.eql('silly log');
+			expect(logs[1].message).to.eql('trace log');
+			expect(logs[2].message).to.eql('debug log');
+			expect(logs[3].message).to.eql('info log');
+			expect(logs[4].message).to.eql('warning log');
+			expect(logs[5].message).to.eql('error log');
+			expect(logs[6].message).to.eql('critical log');
 		});
 	});
 	describe('silent transport', () => {
@@ -39,7 +106,6 @@ describe('transports', () => {
 			let relativeConfig = {
 				machineType: 'test',
 				transport: {
-					fluentd: false,
 					console: false,
 					redis: false
 				},
@@ -71,35 +137,12 @@ describe('transports', () => {
 			expect(message).to.contain('format test');
 		});
 	});
-	describe('fluentd transport', () => {
-		it('should fluentd ', () => {
-			let relativeConfig = {
-				machineType: 'test',
-				transport: {
-					fluentd: true
-				},
-
-				extraDetails: true,
-				verbosityLevel: 2,
-				isDefault: true
-			};
-			let log = new Logger('test', relativeConfig);
-
-			const spy = sinon.spy(log.container.transports[0], '_log');
-
-			log.info('hi info test', { component: 'test-Component' });
-			const { message, meta } = spy.getCalls()[0].args[0];
-			expect(message).to.contain('hi info test');
-			expect(meta.meta.internal.component).to.eql('test-Component')
-		});
-	});
 	describe('multiple transports', () => {
 		it('should multiple transports ', () => {
 			const useSentinel = false;
 			let relativeConfig = {
 				machineType: 'test',
 				transport: {
-					fluentd: true,
 					console: true,
 					redis: true
 				},

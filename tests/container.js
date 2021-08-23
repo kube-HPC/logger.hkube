@@ -9,7 +9,6 @@ describe('container', () => {
 			machineType: 'test',
 			transport: {
 				console: true,
-				fluentd: false,
 				logstash: false,
 				file: false
 			},

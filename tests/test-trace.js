@@ -9,7 +9,6 @@ describe('test-trace', () => {
 			machineType: 'test',
 			transport: {
 				console: true,
-				fluentd: false,
 				logstash: false,
 				file: false
 			},
@@ -32,7 +31,6 @@ describe('test-trace', () => {
 			machineType: 'test',
 			transport: {
 				console: true,
-				fluentd: false,
 				logstash: false,
 				file: false
 			},
@@ -55,7 +53,6 @@ describe('test-trace', () => {
 			machineType: 'test',
 			transport: {
 				console: true,
-				fluentd: false,
 				logstash: false,
 				file: false
 			},

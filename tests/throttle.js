@@ -9,7 +9,6 @@ describe('throttle', () => {
 		const config = {
 			transport: {
 				console: true,
-				fluentd: false,
 				logstash: false,
 				file: false
 			},

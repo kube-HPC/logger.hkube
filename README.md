@@ -40,40 +40,49 @@ in order to run you can clone the repo or using ```npm install logger ```
 configuration 
 
 ```js
-    machineType:"test",
-    transport : {
-        console: true,
-        fluentd: false,
-        logstash: false,
-        file: false,
-        redis : true
-    },
-    fileTransport: {
-        level: null,
-        silent: false,
-        eol: null,
-        filename: 'data/info.log',
-        maxsize: 10000,
-        maxFiles: 1000,
-        tailable: true,
-        maxRetries: 2,
-        zippedArchive: false,
-        options: { flags: 'a' },
-    },
-    redis: {
-        host: 'localhost',
-        port: 6379,
-        sentinel: true,
-        verbosityLevelByRedis: true,
-        clientVerbosity: 'error'
-    },
-    logstash : {
-        logstashURL: "127.0.0.1",
-        logstashPort: 28777
-    },
-    extraDetails :false,
-    verbosityLevel : 1,
-    isDefault:true
+
+transport : {
+    console: true,
+    file: true,
+    redis : true
+    logstash: true,
+},
+console: {
+    json: true,
+	colors: true
+},
+file: {
+    json: true,
+	colors: true
+    level: 'info',
+    silent: false,
+    eol: null,
+    filename: 'data/info.log',
+    maxsize: 10000,
+    maxFiles: 1000,
+    tailable: true,
+    maxRetries: 2,
+    zippedArchive: false,
+    options: { flags: 'a' },
+},
+redis: {
+    json: true,
+	colors: true
+    host: 'localhost',
+    port: 6379,
+    sentinel: true,
+    verbosityLevelByRedis: true,
+    clientVerbosity: 'error'
+},
+logstash : {
+    json: true,
+	colors: true
+    logstashURL: '127.0.0.1',
+    logstashPort: 28777
+},
+extraDetails: false,
+verbosityLevel: 1,
+isDefault: true
 
 ```
 
