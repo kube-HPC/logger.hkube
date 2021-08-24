@@ -12,7 +12,6 @@ const config = {
     },
     options: {
         extraDetails: false,
-        verbosityLevel: 1,
         isDefault: true
     }
 };

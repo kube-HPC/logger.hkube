@@ -9,13 +9,8 @@ const config = {
         logstash: false,
         file: false
     },
-    logstash: {
-        logstashURL: '127.0.0.1',
-        logstashPort: 28777
-    },
     options: {
         extraDetails: false,
-        verbosityLevel: 1,
         isDefault: true
     }
 };

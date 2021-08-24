@@ -25,7 +25,6 @@ describe('transports', () => {
                     filename: filename,
                 },
                 options: {
-                    verbosityLevel: 2,
                     isDefault: true
                 }
             };
@@ -45,6 +44,7 @@ describe('transports', () => {
                     console: true,
                 },
                 file: {
+                    level: 'critical',
                     json: true,
                     colors: false,
                     filename: filename,
@@ -54,12 +54,10 @@ describe('transports', () => {
                     colors: false
                 },
                 options: {
-                    verbosityLevel: 0,
                     isDefault: true
                 }
             };
             const log = new Logger('test', relativeConfig);
-            log.silly('silly log', { component: 'silly-component' });
             log.trace('trace log', { component: 'trace-component' });
             log.debug('debug log', { component: 'debug-component' });
             log.info('info log', { component: 'info-component' });
@@ -78,13 +76,12 @@ describe('transports', () => {
                 const json = JSON.parse(line);
                 logs.push(json);
             }
-            expect(logs[0].message).to.eql('silly log');
-            expect(logs[1].message).to.eql('trace log');
-            expect(logs[2].message).to.eql('debug log');
-            expect(logs[3].message).to.eql('info log');
-            expect(logs[4].message).to.eql('warning log');
-            expect(logs[5].message).to.eql('error log');
-            expect(logs[6].message).to.eql('critical log');
+            expect(logs[0].message).to.eql('trace log');
+            expect(logs[1].message).to.eql('debug log');
+            expect(logs[2].message).to.eql('info log');
+            expect(logs[3].message).to.eql('warning log');
+            expect(logs[4].message).to.eql('error log');
+            expect(logs[5].message).to.eql('critical log');
         });
     });
     describe('silent transport', () => {
@@ -95,7 +92,6 @@ describe('transports', () => {
                     redis: false
                 },
                 options: {
-                    verbosityLevel: 2,
                     isDefault: true
                 }
             };
@@ -113,8 +109,8 @@ describe('transports', () => {
                 transport: {
                     console: true
                 },
-                options: {
-                    verbosityLevel: 1,
+                console: {
+                    level: 'trace',
                     format: 'logger::{level}::{message}',
                 },
             };
@@ -142,7 +138,6 @@ describe('transports', () => {
                 },
                 options: {
                     extraDetails: true,
-                    verbosityLevel: 2,
                     isDefault: true
                 }
             };
@@ -169,7 +164,6 @@ describe('transports', () => {
                 },
                 options: {
                     extraDetails: true,
-                    verbosityLevel: 2,
                     isDefault: true
                 }
             };

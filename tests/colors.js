@@ -4,14 +4,11 @@ describe('colors', () => {
     it('should print in colors', () => {
         const config = {
             transport: {
-                console: true
-            },
-            options: {
-                verbosityLevel: 0
+                console: true,
+                level: 'trace'
             }
         };
         const log = new Logger('test', config);
-        log.silly('bla', { component: 'MAIN' });
         log.trace('trace', { component: 'MAIN' });
         log.info('info', { component: 'MAIN' });
         log.debug('debug', { component: 'MAIN' });

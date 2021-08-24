@@ -13,7 +13,6 @@ describe('throttle', () => {
                 file: false
             },
             options: {
-                verbosityLevel: 1,
                 throttle: {
                     wait: 30000
                 }
