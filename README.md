@@ -5,7 +5,7 @@
 - running logs with elastic fluentd  conosle and view in kibana 
 - costomize your log level and colors by sending it from the logger constructor the following availble by default ```debug,info,warning,error,critical``` 
     ```
-         var config = {
+         const config = {
             levels: {
                 silly: 0,
                 debug: 1,
@@ -80,9 +80,11 @@ logstash : {
     logstashURL: '127.0.0.1',
     logstashPort: 28777
 },
-extraDetails: false,
-verbosityLevel: 1,
-isDefault: true
+options: {
+    extraDetails: false,
+    verbosityLevel: 1,
+    isDefault: true
+}
 
 ```
 
@@ -90,19 +92,19 @@ isDefault: true
 ### usage example:
 #### init 
 ```js
-var Logger = require('logger');
-let log = new Logger('test',relativeConfig);
+const Logger = require('logger');
+const log = new Logger('test',relativeConfig);
 ```
 
 
 ### get  created logger
 - use this if know the log container name
 ```js
-var log = Logger.GetLogFromContainer(ServiceName);
+const log = Logger.GetLogFromContainer(ServiceName);
 ```
 -  don't need to send container name if  set this logger as default with ```isDefault:true```
 ```js
-var log = Logger.GetLogFromContainer();
+const log = Logger.GetLogFromContainer();
 ```
 ### log printing 
 ```js
