@@ -41,7 +41,7 @@ describe('transports', () => {
                     console: true,
                 },
                 file: {
-                    level: 'critical',
+                    level: 'trace',
                     json: true,
                     colors: false,
                     filename: filename,
