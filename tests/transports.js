@@ -47,8 +47,9 @@ describe('transports', () => {
                     filename: filename,
                 },
                 console: {
-                    json: true,
-                    colors: false
+                    level: 'trace',
+                    json: false,
+                    colors: true
                 }
             };
             const log = new Logger('test', relativeConfig);
