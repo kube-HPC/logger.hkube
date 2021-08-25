@@ -72,7 +72,7 @@ redis: {
     port: 6379,
     sentinel: true,
     verbosityLevelByRedis: true,
-    clientVerbosity: 'error'
+    level: 'error'
 },
 logstash : {
     json: true,
@@ -81,8 +81,7 @@ logstash : {
     logstashPort: 28777
 },
 options: {
-    extraDetails: false,
-    isDefault: true
+    extraDetails: false
 }
 
 ```

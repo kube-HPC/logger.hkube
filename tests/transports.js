@@ -23,9 +23,6 @@ describe('transports', () => {
                 file: {
                     json: true,
                     filename: filename,
-                },
-                options: {
-                    isDefault: true
                 }
             };
             const log = new Logger('test', relativeConfig);
@@ -52,9 +49,6 @@ describe('transports', () => {
                 console: {
                     json: true,
                     colors: false
-                },
-                options: {
-                    isDefault: true
                 }
             };
             const log = new Logger('test', relativeConfig);
@@ -90,9 +84,6 @@ describe('transports', () => {
                 transport: {
                     console: false,
                     redis: false
-                },
-                options: {
-                    isDefault: true
                 }
             };
             let log = new Logger('test', relativeConfig);
@@ -134,11 +125,10 @@ describe('transports', () => {
                     port: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_PORT : process.env.REDIS_SERVICE_PORT || 6379,
                     sentinel: useSentinel,
                     verbosityLevelByRedis: process.env.REDIS_VERBOSITY || true,
-                    clientVerbosity: process.env.CLIENT_VERBOSITY || 'error'
+                    level: process.env.CLIENT_VERBOSITY || 'error'
                 },
                 options: {
-                    extraDetails: true,
-                    isDefault: true
+                    extraDetails: true
                 }
             };
             let log = new Logger('test', relativeConfig);
@@ -160,11 +150,10 @@ describe('transports', () => {
                     port: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_PORT : process.env.REDIS_SERVICE_PORT || 6379,
                     sentinel: useSentinel,
                     verbosityLevelByRedis: process.env.REDIS_VERBOSITY || true,
-                    clientVerbosity: process.env.CLIENT_VERBOSITY || 'error'
+                    level: process.env.CLIENT_VERBOSITY || 'error'
                 },
                 options: {
-                    extraDetails: true,
-                    isDefault: true
+                    extraDetails: true
                 }
             };
             const redisClient = RedisFactory.getClient(relativeConfig.redis);

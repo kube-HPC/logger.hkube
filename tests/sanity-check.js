@@ -10,8 +10,7 @@ const config = {
         file: false
     },
     options: {
-        extraDetails: false,
-        isDefault: true
+        extraDetails: false
     }
 };
 

@@ -17,8 +17,6 @@ describe('container', () => {
             },
             options: {
                 extraDetails: true,
-                verbosityLevel: 2,
-                isDefault: true
             }
         };
         let logger = new Logger('test', relativeConfig);

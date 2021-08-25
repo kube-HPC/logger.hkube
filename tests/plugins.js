@@ -21,8 +21,7 @@ const config = {
         logstashPort: 28777
     },
     options: {
-        extraDetails: false,
-        isDefault: true
+        extraDetails: false
     }
 };
 

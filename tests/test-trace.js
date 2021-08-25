@@ -13,7 +13,6 @@ describe('test-trace', () => {
             },
             options: {
                 extraDetails: true,
-                isDefault: true
             },
             console: {
                 level: 'trace'
@@ -38,7 +37,6 @@ describe('test-trace', () => {
             },
             options: {
                 extraDetails: true,
-                isDefault: true
             }
         };
         let log = new Logger('test', relativeConfig);
@@ -59,8 +57,7 @@ describe('test-trace', () => {
                 logstashPort: 28777
             },
             options: {
-                extraDetails: true,
-                isDefault: true
+                extraDetails: true
             }
         };
         let log = new Logger('test', relativeConfig);
