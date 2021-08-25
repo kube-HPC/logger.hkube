@@ -5,7 +5,7 @@
 - running logs with elastic fluentd  conosle and view in kibana 
 - costomize your log level and colors by sending it from the logger constructor the following availble by default ```debug,info,warning,error,critical``` 
     ```
-         var config = {
+         const config = {
             levels: {
                 silly: 0,
                 debug: 1,
@@ -35,33 +35,54 @@
 
 
 ### running 
-    in order to run you can clone the repo or using ```npm install logger ```
-
+in order to run you can clone the repo or using ```npm install logger ```
 
 configuration 
+
 ```js
-  machineType:"test",
-    transport : {
-        console: true,
-        fluentd: false,
-        logstash: false,
-        file: false,
-        redis : true
-    },
-    redis: {
-            host: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_HOST : process.env.REDIS_SERVICE_HOST || 'localhost',
-            port: useSentinel ? process.env.REDIS_SENTINEL_SERVICE_PORT : process.env.REDIS_SERVICE_PORT || 6379,
-            sentinel: useSentinel,
-            verbosityLevelByRedis: process.env.REDIS_VERBOSITY || true,
-            clientVerbosity: process.env.CLIENT_VERBOSITY || 'error'
-    },
-    logstash : {
-        logstashURL: "127.0.0.1",
-        logstashPort: 28777
-    },
-    extraDetails :false,
-    verbosityLevel : 1,
-    isDefault:true
+
+transport : {
+    console: true,
+    file: true,
+    redis : true
+    logstash: true,
+},
+console: {
+    json: true,
+	colors: true
+},
+file: {
+    json: true,
+	colors: true
+    level: 'info',
+    silent: false,
+    eol: null,
+    filename: 'data/info.log',
+    maxsize: 10000,
+    maxFiles: 1000,
+    tailable: true,
+    maxRetries: 2,
+    zippedArchive: false,
+    options: { flags: 'a' },
+},
+redis: {
+    json: true,
+	colors: true
+    host: 'localhost',
+    port: 6379,
+    sentinel: true,
+    verbosityLevelByRedis: true,
+    level: 'error'
+},
+logstash : {
+    json: true,
+	colors: true
+    logstashURL: '127.0.0.1',
+    logstashPort: 28777
+},
+options: {
+    extraDetails: false
+}
 
 ```
 
@@ -69,21 +90,19 @@ configuration
 ### usage example:
 #### init 
 ```js
-var Logger = require('logger');
-let log = new Logger('test',relativeConfig);
+const Logger = require('logger');
+const log = new Logger('test',relativeConfig);
 ```
-
-
 
 
 ### get  created logger
 - use this if know the log container name
 ```js
-var log = Logger.GetLogFromContainer(RMS.ServiceName);
+const log = Logger.GetLogFromContainer(ServiceName);
 ```
 -  don't need to send container name if  set this logger as default with ```isDefault:true```
 ```js
-var log = Logger.GetLogFromContainer();
+const log = Logger.GetLogFromContainer();
 ```
 ### log printing 
 ```js
